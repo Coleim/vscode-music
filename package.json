@@ -13,10 +13,14 @@
   "main": "./dist/extension.js",
   "contributes": {
     "commands": [
-      {
-        "command": "code-music.start",
-        "title": "CodeMusic: Start Coding in Music"
-      }
+        {
+          "command": "code-music.start",
+          "title": "CodeMusic: Start Coding in Music"
+        },
+        {
+          "command": "code-music.stop",
+          "title": "CodeMusic: Stop the beat"
+        }
     ]
   },
   "scripts": {

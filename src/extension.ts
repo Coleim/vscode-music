@@ -4,33 +4,31 @@ import * as vscode from 'vscode';
 import * as path from 'path';
 const sound = require("sound-play");
 
-// This method is called when your extension is activated
-// Your extension is activated the very first time the command is executed
 export function activate(context: vscode.ExtensionContext) {
 
-	// Use the console to output diagnostic information (console.log) and errors (console.error)
-	// This line of code will only be executed once when your extension is activated
-	console.log('Congratulations, your extension "code-music" is now active!');
+    let canPlay = false;
 
-	// The command has been defined in the package.json file
-	// Now provide the implementation of the command with registerCommand
-	// The commandId parameter must match the command field in package.json
-	const disposable = vscode.commands.registerCommand('code-music.start', () => {
-		// The code you place here will be executed every time your command is executed
-		// Display a message box to the user
-		vscode.window.showInformationMessage('Let\'s code in Music!');
-	});
-
-	context.subscriptions.push(disposable);
+    context.subscriptions.push(
+        vscode.commands.registerCommand('code-music.start', () => {
+            vscode.window.showInformationMessage('Let\'s code in Music!');
+            canPlay = true;
+        }),
+        vscode.commands.registerCommand('code-music.stop', () => {
+            vscode.window.showInformationMessage('Yaw dan\'t like mousic ?');
+            canPlay = false;
+        })
+    );
 
     vscode.workspace.onDidChangeTextDocument(event => {
-        const changes = event.contentChanges;
-        if (changes.length > 0) {
-            const lastChange = changes[changes.length - 1];
-            console.log(`lastChange: `, lastChange);
-            for( let charIdx = lastChange.rangeLength; charIdx < lastChange.text.length; charIdx++ ) {
-                if(lastChange.text[charIdx].replace(/\s/g, '') !== '') {
-                    playSoundForKey(lastChange.text[charIdx]);
+        if(canPlay) {
+            const changes = event.contentChanges;
+            if (changes.length > 0) {
+                const lastChange = changes[changes.length - 1];
+                console.log(`lastChange: `, lastChange);
+                for (let charIdx = lastChange.rangeLength; charIdx < Math.min(lastChange.text.length, lastChange.rangeLength + 10); charIdx++) {
+                    if (lastChange.text[charIdx].replace(/\s/g, '') !== '') {
+                        playSoundForKey(lastChange.text[charIdx]);
+                    }
                 }
             }
         }
@@ -127,4 +125,4 @@ function playSoundForKey(key: string) {
 }
 
 // This method is called when your extension is deactivated
-export function deactivate() {}
+export function deactivate() { }
